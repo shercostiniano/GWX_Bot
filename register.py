@@ -4,9 +4,9 @@ import time
 import random, string
 
 from telegram import ReplyKeyboardMarkup
-from googleRefreshToken import submitData, changeKeyboard
+from spreadsheet_jobs import submitData, changeKeyboard
 
-REGISTER, CHOOSING, TYPING_REPLY, MAIN, REWARDS, TYPING_REFER, REFERRAL = range(7)
+REGISTER, CHOOSING, TYPING_REPLY, MAIN, REWARDS, TYPING_REFER, REFERRAL, TASK = range(8)
 
 email = 'Email Address'
 cryptoAddress = 'Ethereum/Bitcoin/Stellar Address'
@@ -61,7 +61,9 @@ def done(bot, update, user_data):
 
     else:
         submitData(timestamp, userID, username, emailOutput, cryptoAddressOutput, balance, referral_code,
-                   referred_users, already_referred=False)
+                   referred_users, already_referred=False, facebook_status='NOT COMPLETE', twitter_status='NOT COMPLETE',
+                   instagram_status='NOT COMPLETE', youtube_status='NOT COMPLETE')
+
         update.message.reply_text("Successfully Registered!\n"
                                   "Referral Code: " + str(referral_code),
                                   reply_markup=changeKeyboard(bot, update))

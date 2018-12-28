@@ -7,6 +7,10 @@ index_balance = 6
 index_refer_code = 7
 index_referred_user = 8
 index_already_referred = 9
+index_facebook = 10
+index_twitter = 11
+index_instagram = 12
+index_youtube = 13
 
 joinButton = 'Join Channel'
 balanceButton = 'Check Balance'
@@ -15,6 +19,7 @@ referral = "Referral"
 
 no_refer_keyboard = ReplyKeyboardMarkup([[referral, rewardButton], [joinButton, balanceButton]], resize_keyboard=True)
 yes_refer_keyboard = ReplyKeyboardMarkup([[rewardButton], [joinButton, balanceButton]], resize_keyboard=True)
+
 
 def gspreadUpdater():
     global worksheet
@@ -69,7 +74,8 @@ def checkReferral(bot, update, referrer_code):
 
         else:
             worksheet.update_cell(find_referrer.row, index_referred_user, int(referrer_users) + 1)  # Add referred users
-            worksheet.update_cell(find_id.row, index_already_referred, 'TRUE')                      # Add True to know whether a user has already used a referral code
+            worksheet.update_cell(find_id.row, index_already_referred,
+                                  'TRUE')  # Add True to know whether a user has already used a referral code
             addReferrerBalance(find_referrer.row, index_balance, 20)
             return True
 
@@ -77,8 +83,11 @@ def checkReferral(bot, update, referrer_code):
         return False
 
 
-def submitData(timestamp, uid, username, email, wallet, balance, referral_code, referred_user, already_referred):
-    worksheet.append_row([timestamp, uid, username, email, wallet, balance, referral_code, referred_user, already_referred])
+def submitData(timestamp, uid, username, email, wallet, balance, referral_code, referred_user, already_referred,
+               facebook_status, twitter_status, instagram_status, youtube_status):
+    worksheet.append_row(
+        [timestamp, uid, username, email, wallet, balance, referral_code, referred_user, already_referred,
+         facebook_status, twitter_status, instagram_status, youtube_status])
 
 
 def storeInformation(bot, update):
@@ -114,3 +123,18 @@ def changeKeyboard(bot, update):
         return yes_refer_keyboard
     else:
         return no_refer_keyboard
+
+
+def taskComplete(task):
+    if task == 'facebook':
+        worksheet.update_cell(find_id.row, index_facebook, 'COMPLETE')
+
+    elif task == 'twitter':
+        worksheet.update_cell(find_id.row, index_twitter, 'COMPLETE')
+
+    elif task == 'instagram':
+        worksheet.update_cell(find_id.row, index_instagram, 'COMPLETE')
+
+    elif task == 'youtube':
+        worksheet.update_cell(find_id.row, index_youtube, 'COMPLETE')
+

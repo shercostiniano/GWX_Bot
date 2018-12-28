@@ -17,16 +17,13 @@ Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
 
-from telegram.ext import Updater, CommandHandler, ConversationHandler, RegexHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, ConversationHandler, RegexHandler, MessageHandler, Filters, CallbackQueryHandler
 from register import *
-from googleRefreshToken import *
+from spreadsheet_jobs import *
 from account import *
-import logging, requests, json, threading, base64
+from rewards import *
+import logging, threading
 
-token = ""
-fanCount = "https://graph.facebook.com/v3.2/293570938130414?fields=fan_count&access_token=" + token
-checkFans = requests.get(fanCount)
-jsonFans = json.loads(checkFans.text)
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -47,17 +44,9 @@ def start(bot, update, args):
         else:
             update.message.reply_text(
                 "Thank you for joining the Telegram Group!\n"
-                "Press/click on 'Create my AcuToken Bounty\n"
-                "Profile' to key in your\n"
+                "Press/click on 'Create Profile' to key in your: \n"
                 "🔷 Emaill address,\n"
-                "🔷 Stellar address,\n"
-                "🔷 Twitter handle,\n"
-                "and to submit the following:\n"
-                "🔷 Facebook screenshot showing you\n"
-                "have followed AcuToken's Facebook\n"
-                "page\n"
-
-                "🔔 A total of 50,000 ACU tokens could\n"
+                "🔔 A total of 50,000 GWX tokens could\n"
                 "be yours!\n",
                 reply_markup=ReplyKeyboardMarkup([[createButton]], resize_keyboard=True, one_time_keyboard=True))
 
@@ -109,11 +98,18 @@ def main():
             REFERRAL: [RegexHandler('^(' + YES + ')$', referralCheck, pass_user_data=True),
                        RegexHandler('^(' + NO + ')$', referralCheck, pass_user_data=True)],
 
-            REWARDS: [RegexHandler('^(' + fbPhoto + ')$', completeFacebook()),
-                      RegexHandler('^(' + twitterPhoto + ')$', completeTwitter()),
-                      RegexHandler('^(' + instagramPhoto + ')$', completeInstagram()),
-                      RegexHandler('^(' + youtubePhoto + ')$', completeYoutube()),
+            REWARDS: [RegexHandler('^(' + facebook_task + ')$', facebook),
+                      RegexHandler('^(' + twitter_task + ')$', twitter),
+                      RegexHandler('^(' + instagram_task + ')$', instagram),
+                      RegexHandler('^(' + youtube_task + ')$', youtube),
+                      RegexHandler('^(' + completed_task + ')$', completedTasks),
                       RegexHandler('^(' + back + ')$', goBack)],
+
+            TASK: [RegexHandler('^(' + facebook_verify_button + ')$', completeFacebook),
+                   RegexHandler('^(' + twitter_verify_button + ')$', completeTwitter),
+                   RegexHandler('^(' + instagram_verify_button + ')$', completeInstagram),
+                   RegexHandler('^(' + youtube_verify_button + ')$', completeYoutube)],
+
 
             TYPING_REPLY: [MessageHandler(Filters.text, receivedInformation, pass_user_data=True)],
             TYPING_REFER: [MessageHandler(Filters.text, receivedRefer, pass_user_data=True)]

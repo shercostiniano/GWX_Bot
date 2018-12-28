@@ -1,17 +1,19 @@
 from telegram import ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup, TelegramError, ReplyKeyboardRemove
 from register import REWARDS, MAIN, TYPING_REFER, REFERRAL
-from googleRefreshToken import changeKeyboard, checkReferral
+from spreadsheet_jobs import changeKeyboard, checkReferral
 
-fbPhoto = 'Facebook Screenshot'
-twitterPhoto = 'Twitter Screenshot'
-instagramPhoto = 'Instagram Screenshot'
-youtubePhoto = 'Youtube Screenshot'
+facebook_task = 'Facebook'
+twitter_task = 'Twitter'
+instagram_task = 'Instagram'
+youtube_task = 'Youtube'
+completed_task = 'Completed Tasks'
+
+facebook_verify_button = "FACEBOOK DONE"
+twitter_verify_button = "TWITTER DONE"
+instagram_verify_button = "INSTAGRAM DONE"
+youtube_verify_button = "YOUTUBE DONE"
+
 back = 'Back'
-
-statusFb = InlineKeyboardButton("Facebook", 'https://facebook.com/GWX')
-statusTwitter = InlineKeyboardButton("Twitter", 'https://twitter.com/GWX')
-statusInstagram = InlineKeyboardButton("Instagram", 'https://instagram.com/GWX')
-statusYoutube = InlineKeyboardButton("Youtube", 'https://youtube.com/GWX')
 
 YES = 'YES'
 NO = 'NO'
@@ -74,38 +76,13 @@ def getRewards(bot, update):
                                   "📌 Follow our Twitter Profile\n"
                                   "📌 Follow our Instagram Profile\n"
                                   "📌 Subscribe to our Youtube Channel\n",
-                                  reply_markup=InlineKeyboardMarkup(
-                                      [[statusFb, statusTwitter], [statusInstagram, statusYoutube]]),
+                                  reply_markup=ReplyKeyboardMarkup([[facebook_task, twitter_task], [instagram_task, youtube_task], [completed_task],  [back]], resize_keyboard=True),
                                   disable_web_page_preview=True)
-
-        update.message.reply_text("📷 Send the screenshots showing that you have completed the task\n",
-                                  reply_markup=ReplyKeyboardMarkup(
-                                      [[fbPhoto, twitterPhoto], [instagramPhoto, youtubePhoto], [back]], resize_keyboard=True))
 
         return REWARDS
 
     except TelegramError:
         getRewards(bot, update)
-
-
-def completeFacebook():
-    return False
-
-
-def completeTwitter():
-    return False
-
-
-def completeInstagram():
-    return False
-
-
-def completeYoutube():
-    pass
-
-
-def completedTasks():
-    pass
 
 
 def joinChannel(bot, update):
