@@ -4,7 +4,7 @@ import time
 import random, string
 
 from telegram import ReplyKeyboardMarkup
-from spreadsheet_jobs import submitData, changeKeyboard
+from spreadsheet_jobs import submitData, main_keyboard
 
 REGISTER, CHOOSING, TYPING_REPLY, MAIN, REWARDS, TYPING_REFER, REFERRAL, TASK = range(8)
 
@@ -66,7 +66,7 @@ def done(bot, update, user_data):
 
         update.message.reply_text("Successfully Registered!\n"
                                   "Referral Code: " + str(referral_code),
-                                  reply_markup=changeKeyboard(bot, update))
+                                  reply_markup=main_keyboard)
         return MAIN
 
 

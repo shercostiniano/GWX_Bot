@@ -17,8 +17,10 @@ balanceButton = 'Check Balance'
 rewardButton = 'Get More Rewards'
 referral = "Referral"
 
-no_refer_keyboard = ReplyKeyboardMarkup([[referral, rewardButton], [joinButton, balanceButton]], resize_keyboard=True)
-yes_refer_keyboard = ReplyKeyboardMarkup([[rewardButton], [joinButton, balanceButton]], resize_keyboard=True)
+main_keyboard = ReplyKeyboardMarkup([[referral, rewardButton], [joinButton, balanceButton]], resize_keyboard=True)
+
+# For not yet referred //no_refer_keyboard = ReplyKeyboardMarkup([[referral, rewardButton], [joinButton, balanceButton]], resize_keyboard=True)
+# For already referred //yes_refer_keyboard = ReplyKeyboardMarkup([[rewardButton], [joinButton, balanceButton]], resize_keyboard=True)
 
 
 def gspreadUpdater():
@@ -39,8 +41,8 @@ def existing(bot, update):
         ID = update.message.from_user.id
         find_id = worksheet.find(str(ID))
         already_referred = worksheet.cell(find_id.row, index_already_referred).value
-
         result = {'Found_ID': True, 'Already_Referred': already_referred}
+
         if str(ID) == find_id.value:
             return result
 
@@ -108,7 +110,9 @@ def checkBalance(bot, update):
                               f"Referred Users: {referred_user}")
 
 
-def addUserBalance(points):
+def addUserBalance(bot, update, points):
+    ID = update.message.from_user.id
+    find_id = worksheet.find(str(ID))
     balance = worksheet.cell(find_id.row, index_balance).value
     worksheet.update_cell(find_id.row, index_balance, int(balance) + points)
 
@@ -118,11 +122,14 @@ def addReferrerBalance(row, col, points):
     worksheet.update_cell(row, col, int(referrer_balance) + points)
 
 
+"""
+#For changing keyboard if user already referred
 def changeKeyboard(bot, update):
     if existing(bot, update)['Already_Referred'] == 'TRUE':
         return yes_refer_keyboard
     else:
         return no_refer_keyboard
+"""
 
 
 def taskComplete(task):
@@ -138,3 +145,16 @@ def taskComplete(task):
     elif task == 'youtube':
         worksheet.update_cell(find_id.row, index_youtube, 'COMPLETE')
 
+
+def checkStatus(bot, update):
+    ID = update.message.from_user.id
+    find_id = worksheet.find(str(ID))
+
+    facebook_stat = worksheet.cell(find_id.row, index_facebook).value
+    twitter_stat = worksheet.cell(find_id.row, index_twitter).value
+    instagram_stat = worksheet.cell(find_id.row, index_instagram).value
+    youtube_stat = worksheet.cell(find_id.row, index_youtube).value
+
+    stat = {'Facebook': facebook_stat, 'Twitter': twitter_stat, 'Instagram': instagram_stat, 'Youtube': youtube_stat}
+
+    return stat

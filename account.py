@@ -1,6 +1,6 @@
 from telegram import ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup, TelegramError, ReplyKeyboardRemove
 from register import REWARDS, MAIN, TYPING_REFER, REFERRAL
-from spreadsheet_jobs import changeKeyboard, checkReferral
+from spreadsheet_jobs import main_keyboard, checkReferral
 
 facebook_task = 'Facebook'
 twitter_task = 'Twitter'
@@ -17,7 +17,6 @@ back = 'Back'
 
 YES = 'YES'
 NO = 'NO'
-
 
 def referralInvite(bot, update):
     update.message.reply_text("Did someone referred you?",
@@ -37,7 +36,7 @@ def referralCheck(bot, update, user_data):
         return TYPING_REFER
     else:
         update.message.reply_text("Please skip this step",
-                                  reply_markup=changeKeyboard(bot, update),
+                                  reply_markup=main_keyboard,
                                   resize_keyboard=True)
         return MAIN
 
@@ -52,7 +51,7 @@ def receivedRefer(bot, update, user_data):
 
         if checkReferral(bot, update, getReferral):
             update.message.reply_text("🎉 Success! 🎉",
-                                      reply_markup=changeKeyboard(bot, update),
+                                      reply_markup=main_keyboard,
                                       resize_keyboard=True)
             return MAIN
 
@@ -92,5 +91,5 @@ def joinChannel(bot, update):
 
 def goBack(bot, update):
     update.message.reply_text("Back",
-                              reply_markup=changeKeyboard(bot, update), resize_keyboard=True)
+                              reply_markup=main_keyboard, resize_keyboard=True)
     return MAIN

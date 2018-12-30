@@ -36,7 +36,7 @@ def start(bot, update, args):
         if existing(bot, update):
             update.message.reply_text("Welcome back " + user_name +
                                       "\nReferral Code: " + str(referral_code),
-                                      reply_markup=changeKeyboard(bot, update),
+                                      reply_markup=main_keyboard,
                                       resize_keyboard=True)
 
             return MAIN
@@ -45,7 +45,7 @@ def start(bot, update, args):
             update.message.reply_text(
                 "Thank you for joining the Telegram Group!\n"
                 "Press/click on 'Create Profile' to key in your: \n"
-                "🔷 Emaill address,\n"
+                "🔷 Email address,\n"
                 "🔔 A total of 50,000 GWX tokens could\n"
                 "be yours!\n",
                 reply_markup=ReplyKeyboardMarkup([[createButton]], resize_keyboard=True, one_time_keyboard=True))
@@ -76,6 +76,12 @@ def error(bot, update, error):
     logger.warning('Update "%s" caused error "%s"', update, error)
 
 
+def cancel(bot, update):
+    update.message.reply_text("Goodbye! \n Type /start if you want to visit me again 🤖",
+                              reply_markup=ReplyKeyboardRemove())
+    return ConversationHandler.END
+
+
 def main():
     updater = Updater("")
     dp = updater.dispatcher
@@ -87,7 +93,8 @@ def main():
             REGISTER: [RegexHandler('^(' + createButton + ')$', registerAccount)],
 
             CHOOSING: [RegexHandler('^(' + email + ')$', gettingInformation, pass_user_data=True),
-                       RegexHandler('^(' + cryptoAddress + ')$', gettingInformation, pass_user_data=True)
+                       RegexHandler('^(' + cryptoAddress + ')$', gettingInformation, pass_user_data=True),
+                       RegexHandler('^(' + DONE + ')$', done, pass_user_data=True)
                        ],
             MAIN: [RegexHandler('^(' + balanceButton + ')$', checkBalance),
                    RegexHandler('^(' + joinButton + ')$', joinChannel),
@@ -115,7 +122,7 @@ def main():
             TYPING_REFER: [MessageHandler(Filters.text, receivedRefer, pass_user_data=True)]
 
         },
-        fallbacks=[RegexHandler('^(' + DONE + ')$', done, pass_user_data=True)]
+        fallbacks=[CommandHandler('cancel', cancel)]
     )
 
     dp.add_handler(main_handler)
